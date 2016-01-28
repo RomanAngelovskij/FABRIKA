@@ -15,7 +15,7 @@ class m160122_123724_createGoodsCatalogue extends Migration
 			'id' => $this->primaryKey(),
 			'name' => $this->string(60)->notNull(),
 			'slug' => $this->string(100)->notNull()->unique(),
-			'parentId' => $this->integer(11)->defaultValue(0)
+			'parentId' => $this->integer(11)->defaultValue(null)
 		]);
 
 		$this->createTable('items', [
@@ -24,12 +24,14 @@ class m160122_123724_createGoodsCatalogue extends Migration
 			'name' => $this->string(250)->notNull(),
 			'images' => $this->text(),
 			'description' => $this->text(),
-			'quantity' => $this->integer(11)->notNull()->defaultValue(0)
+			'price' => $this->double()->notNull()->defaultValue(0)
 		]);
 
 		$this->createIndex('indx-categories-parent_id', 'categories', 'parentId');
 		$this->createIndex('indx-items-cat_id', 'items', 'catId');
 
+
+		$this->addForeignKey('fk-parents', 'categories', 'parentId', 'categories', 'id', 'CASCADE');
 		$this->addForeignKey('fk-items-cat_id', 'items', 'catId', 'categories', 'id', 'CASCADE');
     }
 
