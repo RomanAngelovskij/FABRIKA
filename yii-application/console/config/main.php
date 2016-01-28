@@ -11,7 +11,7 @@ return [
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'controllerNamespace' => 'console\controllers',
-    'components' => [
+	'components' => [
         'log' => [
             'targets' => [
                 [
@@ -20,6 +20,9 @@ return [
                 ],
             ],
         ],
+		'authManager' => [
+			'class' => 'yii\rbac\DbManager',
+		],
     ],
     'params' => $params,
 ];
