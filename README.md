@@ -21,6 +21,8 @@ yii migrate --migrationPath=@yii/rbac/migrations/
 
 Для папки /backend/web/uploads установить права на запись
 
+В /frontend/config/params.php для 'backendUrl' указать адрес бекэнда
+
 Добавление пользователей
 ------------
 
