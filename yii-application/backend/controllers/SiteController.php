@@ -3,7 +3,6 @@ namespace backend\controllers;
 
 use Yii;
 use common\models\Categories;
-use common\models\Items;
 use common\models\ItemsSearch;
 use yii\data\Pagination;
 use yii\filters\AccessControl;

@@ -12,6 +12,9 @@ use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
+use common\models\Categories;
+use common\models\Items;
+use yii\data\Pagination;
 
 /**
  * Site controller
@@ -66,13 +69,61 @@ class SiteController extends Controller
     }
 
     /**
-     * Displays homepage.
+     * Displays homepage and categories with list items.
+	 *
+	 * @param string $slug
      *
      * @return mixed
      */
-    public function actionIndex()
+    public function actionIndex($slug = '')
     {
-        return $this->render('index');
+		$categoriesModel = new Categories();
+
+		$currentCategory = null;
+		$parentId = null;
+		$subcategoriesIds = [];
+
+		// If category is selected...
+		if (!empty($slug)){
+			$currentCategory = $this->_findModel($slug);
+
+			$parentId = !empty($currentCategory) ? $currentCategory->id : null;
+
+			//...build array of subcategories ids
+			$subcategoriesIds = array_keys(
+				$categoriesModel->subcategoriesFlat(
+					$categoriesModel->subcategories(!empty($currentCategory) ? $currentCategory->id : null)
+				)
+			);
+
+			//add parent category id
+			$subcategoriesIds = array_merge([$currentCategory->id], $subcategoriesIds);
+		}
+
+		//List of subcategories
+		$categoriesList = Categories::find()
+			->where(['parentId' => $parentId])
+			->orderBy('name')
+			->all();
+
+		$items = Items::find()->where(['in', 'catId', $subcategoriesIds]);
+
+		$pages = new Pagination(
+			[
+				'totalCount' => $items->count(),
+				'defaultPageSize' => Yii::$app->params['itemsOnPage'],
+				'forcePageParam' => false,
+				'pageSizeParam' => false,
+			]
+		);
+
+		return $this->render('index', [
+			'categories' => $categoriesList,
+			'breadcrumbs' => !empty($currentCategory) ? $this->__makeBreadcrumbs($currentCategory->id) : [],
+			'CurrentCategory' => $currentCategory,
+			'items' => $items->offset($pages->offset)->limit($pages->limit)->all(),
+			'pages' => $pages,
+		]);
     }
 
     /**
@@ -210,4 +261,47 @@ class SiteController extends Controller
             'model' => $model,
         ]);
     }
+
+	/**
+	 * Build array of breadcrumbs
+	 *
+	 * @param int $id current category id
+	 *
+	 * @return array
+	 */
+	private function __makeBreadcrumbs($id){
+		$Breadcrumbs = [];
+
+		$Category = Categories::findOne($id);
+		$Breadcrumbs[] = $Category->name;
+
+		if ($Category->parentId === null){
+			return $Breadcrumbs;
+		}
+
+		do{
+			$Category = Categories::findOne($Category->parentId);
+			$Breadcrumbs[] = ['label' => $Category->name, 'url' => $Category->slug];
+		}while($Category->parentId != null);
+
+
+		return array_reverse($Breadcrumbs);
+	}
+
+	/**
+	 * Finds the Items model based on its primary key value.
+	 * If the model is not found, a 404 HTTP exception will be thrown.
+	 *
+	 * @param string $slug
+	 *
+	 * @return Category the loaded model
+	 * @throws NotFoundHttpException if the model cannot be found
+	 */
+	protected function _findModel($slug){
+		if (($model = Categories::findOne(['slug' => $slug])) !== null) {
+			return $model;
+		} else {
+			throw new NotFoundHttpException('Категория не найдена.');
+		}
+	}
 }

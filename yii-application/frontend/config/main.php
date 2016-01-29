@@ -16,6 +16,16 @@ return [
             'identityClass' => 'common\models\User',
             'enableAutoLogin' => true,
         ],
+		'authManager' => [
+			'class' => 'yii\rbac\DbManager',
+		],
+		'db' => [
+			'class' => 'yii\db\Connection',
+			'dsn' => 'mysql:host=localhost;dbname=tests',
+			'username' => 'tests',
+			'password' => '',
+			'charset' => 'utf8',
+		],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [
@@ -28,6 +38,19 @@ return [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
+		'urlManager' => [
+			'class' => 'yii\web\UrlManager',
+			'showScriptName' => false,
+			'enablePrettyUrl' => true,
+			'suffix' => null,
+			'rules' => array(
+				'site/index/<slug:[\w\-\/]+>' => 'site/index',
+				'items/<id:\d+>' => 'items/index',
+				'<controller:\w+>/<id:\d+>' => '<controller>/view',
+				'<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',
+				'<controller:\w+>/<action:\w+>' => '<controller>/<action>',
+			),
+		],
     ],
     'params' => $params,
 ];

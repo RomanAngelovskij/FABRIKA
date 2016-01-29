@@ -89,3 +89,79 @@ a.desc:after {
     padding: 10px 20px;
     margin: 0 0 15px 0;
 }
+
+.list-group .glyphicon {
+    float: right;
+}
+
+/*
+Items positions
+*/
+.item-wrap{
+    border: 1px solid #ccc;
+    width: 32%;
+    display: inline-block;
+    float: left;
+    margin: 0px 5px 5px 0px;
+    padding: 5px;
+    height: 450px;
+    overflow: hidden;
+}
+
+.item-wrap .img-wrap{
+    padding: 15px;
+    max-height: 72%;
+    overflow: hidden;
+}
+
+.item-wrap .img-wrap img{
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.item-wrap a{
+    display: block;
+    font-weight: bold;
+    color: #BB1616;
+    margin: 5px 0px 10px 0px;
+    font-size: 1.3em;
+}
+
+.item-wrap .description{
+}
+
+.item-view{
+
+}
+
+.item-view .price{
+    display: inline-block;
+    font-size: 2em;
+}
+
+.item-view .description{
+    margin: 15px 0px 0px 0px;
+}
+
+.item-view .img-wrap .preview{
+    text-align: center;
+}
+
+.item-view .img-wrap .preview img{
+    width: 100%;
+}
+
+.item-view .img-wrap .min a{
+    display: block;
+    margin-bottom: 10px;
+    border: 3px solid #fff;
+    -webkit-box-shadow: 5px 5px 12px 2px rgba(71,70,71,0.3);
+    -moz-box-shadow: 5px 5px 12px 2px rgba(71,70,71,0.3);
+    box-shadow: 5px 5px 12px 2px rgba(71,70,71,0.3);
+    background-color: #fff;
+    text-align: center;
+}
+
+.item-view .img-wrap .min img{
+    width: 60px;
+}
